@@ -11,6 +11,7 @@ import com.example.hospitals.R
 import com.example.hospitals.adapters.HospitalListAdapter
 import com.example.hospitals.models.HospitalViewItemModel
 import com.example.hospitals.viewmodels.HospitalListViewModel
+import com.example.hospitals.viewmodels.HospitalViewState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.viewmodel.ext.android.getViewModel
 
@@ -37,28 +38,25 @@ class HospitalListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = getViewModel()
+        observeViewModel()
         setupRecyclerView()
     }
+
+    private fun observeViewModel() {
+        viewModel.viewState.observe(viewLifecycleOwner, {
+            when (it) {
+                is HospitalViewState.ListOfHospitalsFetched ->
+                    showHospitals(it.listOfHospitals)
+            }
+        })
+    }
+
+    private fun showHospitals(listOfHospitals: List<HospitalViewItemModel>) =
+        updateAdapter(items = listOfHospitals)
 
     private fun setupRecyclerView() {
         recyclerView?.adapter = adapter
         recyclerView?.layoutManager = LinearLayoutManager(context)
-
-        // TODO - Remove. Just for testing.
-        updateAdapter(
-            listOf(
-                HospitalViewItemModel(
-                    id = 123,
-                    name = "Manchester Hospital",
-                    city = "Manchester"
-                ),
-                HospitalViewItemModel(
-                    id = 123,
-                    name = "Manchester Hospital2",
-                    city = "Manchester"
-                )
-            )
-        )
     }
 
     private fun updateAdapter(items: List<HospitalViewItemModel>) {

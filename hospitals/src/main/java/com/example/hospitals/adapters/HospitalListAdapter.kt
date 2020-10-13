@@ -13,6 +13,10 @@ import com.example.hospitals.viewholders.bindWithItemModel
 class HospitalListAdapter : RecyclerView.Adapter<ViewHolder>() {
 
     var items = listOf<HospitalViewItemModel>()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(parent.context)
