@@ -5,13 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hospitals.R
 import com.example.hospitals.adapters.HospitalListAdapter
 import com.example.hospitals.models.HospitalViewItemModel
-import com.example.hospitals.viewmodels.HospitalListViewModel
 
 class HospitalListFragment : Fragment() {
 
@@ -21,7 +19,7 @@ class HospitalListFragment : Fragment() {
         fun newInstance() = HospitalListFragment()
     }
 
-    private lateinit var viewModel: HospitalListViewModel
+//    private lateinit var viewModel: HospitalListViewModel
 
     private val recyclerView: RecyclerView? by lazy { view?.findViewById(R.id.recycler_view) }
     private val adapter = HospitalListAdapter()
@@ -61,11 +59,5 @@ class HospitalListFragment : Fragment() {
 
     private fun updateAdapter(items: List<HospitalViewItemModel>) {
         adapter.items = items
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(HospitalListViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 }
