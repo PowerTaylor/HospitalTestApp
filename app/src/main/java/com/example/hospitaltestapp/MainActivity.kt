@@ -2,7 +2,7 @@ package com.example.hospitaltestapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.hospitals.HospitalListFragment
+import com.example.hospitals.fragments.HospitalListFragment
 
 class MainActivity : AppCompatActivity() {
 

@@ -1,4 +1,4 @@
-package com.example.hospitals
+package com.example.hospitals.viewmodels
 
 import androidx.lifecycle.ViewModel
 
