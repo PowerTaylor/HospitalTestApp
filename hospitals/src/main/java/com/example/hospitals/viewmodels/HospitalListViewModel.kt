@@ -3,10 +3,10 @@ package com.example.hospitals.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.core.hospitaldata.models.HospitalsDataModel
+import com.example.core.hospitaldata.repositories.HospitalDataRepository
+import com.example.core.hospitaldata.repositories.HospitalFilterOptions
 import com.example.hospitals.models.HospitalViewItemModel
-import com.example.hospitals.models.HospitalsDataModel
-import com.example.hospitals.repositories.HospitalDataRepository
-import com.example.hospitals.repositories.HospitalFilterOptions
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign

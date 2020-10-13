@@ -1,4 +1,4 @@
-package com.example.hospitals.models
+package com.example.core.hospitaldata.models
 
 data class HospitalsDataModel(
     val id: Long,

@@ -12,7 +12,7 @@ import com.example.hospitals.adapters.HospitalListAdapter
 import com.example.hospitals.models.HospitalViewItemModel
 import com.example.hospitals.viewmodels.HospitalListViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.android.viewmodel.ext.android.getViewModel
 
 class HospitalListFragment : Fragment() {
 
@@ -22,7 +22,7 @@ class HospitalListFragment : Fragment() {
         fun newInstance() = HospitalListFragment()
     }
 
-    private val viewModel: HospitalListViewModel by viewModel()
+    private lateinit var viewModel: HospitalListViewModel
 
     private val recyclerView: RecyclerView? by lazy { view?.findViewById(R.id.recycler_view) }
     private val adapter = HospitalListAdapter()
@@ -36,6 +36,7 @@ class HospitalListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = getViewModel()
         setupRecyclerView()
     }
 
@@ -66,12 +67,13 @@ class HospitalListFragment : Fragment() {
 
     fun onFilterClicked() {
         val singleItems = arrayOf("Item 1", "Item 2", "Item 3")
-        val checkedItem = 2
+        val checkedItem = 1
 
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(resources.getString(R.string.filter_title))
             .setPositiveButton(resources.getString(R.string.ok)) { dialog, which ->
                 // Respond to positive button press
+                viewModel.onFilterClicked(index = checkedItem)
             }
             .setNeutralButton(resources.getString(R.string.cancel), { dialog, i ->
                 // Implement this.

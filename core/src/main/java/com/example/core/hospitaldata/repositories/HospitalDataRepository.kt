@@ -1,6 +1,6 @@
-package com.example.hospitals.repositories
+package com.example.core.hospitaldata.repositories
 
-import com.example.hospitals.models.HospitalsDataModel
+import com.example.core.hospitaldata.models.HospitalsDataModel
 import io.reactivex.rxjava3.core.Single
 
 interface HospitalDataRepository {

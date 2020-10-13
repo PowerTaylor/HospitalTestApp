@@ -3,9 +3,9 @@ package com.example.hospitals.viewmodels
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.example.hospitals.models.HospitalViewItemModel
-import com.example.hospitals.models.HospitalsDataModel
-import com.example.hospitals.repositories.HospitalDataRepository
-import com.example.hospitals.repositories.HospitalFilterOptions
+import com.example.core.hospitaldata.models.HospitalsDataModel
+import com.example.core.hospitaldata.repositories.HospitalDataRepository
+import com.example.core.hospitaldata.repositories.HospitalFilterOptions
 import com.example.hospitals.rules.RxImmediateSchedulerRule
 import io.mockk.every
 import io.mockk.mockk

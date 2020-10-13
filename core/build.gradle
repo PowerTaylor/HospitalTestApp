@@ -22,6 +22,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -46,6 +51,8 @@ dependencies {
     api "io.reactivex.rxjava3:rxkotlin:3.0.0"
     api 'io.reactivex.rxjava3:rxandroid:3.0.0'
     api 'io.reactivex.rxjava3:rxjava:3.0.0'
+
+    api 'com.google.code.gson:gson:2.8.6'
 
     testApi "io.mockk:mockk:1.9.2"
     androidTestApi "io.mockk:mockk-android:1.9.2"
