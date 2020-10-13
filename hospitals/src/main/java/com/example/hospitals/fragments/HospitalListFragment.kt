@@ -48,16 +48,12 @@ class HospitalListFragment : Fragment() {
                 HospitalViewItemModel(
                     id = 123,
                     name = "Manchester Hospital",
-                    firstLineAddress = "Swinemoor Lane",
-                    city = "Manchester",
-                    postCode = "HU17 0FA"
+                    city = "Manchester"
                 ),
                 HospitalViewItemModel(
                     id = 123,
                     name = "Manchester Hospital2",
-                    firstLineAddress = "Swinemoor Lane",
-                    city = "Manchester",
-                    postCode = "HU17 0FA"
+                    city = "Manchester"
                 )
             )
         )
