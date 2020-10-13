@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.hospitals.R
 import com.example.hospitals.adapters.HospitalListAdapter
 import com.example.hospitals.models.HospitalViewItemModel
+import com.example.hospitals.viewmodels.HospitalListViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class HospitalListFragment : Fragment() {
 
@@ -19,7 +22,7 @@ class HospitalListFragment : Fragment() {
         fun newInstance() = HospitalListFragment()
     }
 
-//    private lateinit var viewModel: HospitalListViewModel
+    private val viewModel: HospitalListViewModel by viewModel()
 
     private val recyclerView: RecyclerView? by lazy { view?.findViewById(R.id.recycler_view) }
     private val adapter = HospitalListAdapter()
@@ -59,5 +62,24 @@ class HospitalListFragment : Fragment() {
 
     private fun updateAdapter(items: List<HospitalViewItemModel>) {
         adapter.items = items
+    }
+
+    fun onFilterClicked() {
+        val singleItems = arrayOf("Item 1", "Item 2", "Item 3")
+        val checkedItem = 2
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(resources.getString(R.string.filter_title))
+            .setPositiveButton(resources.getString(R.string.ok)) { dialog, which ->
+                // Respond to positive button press
+            }
+            .setNeutralButton(resources.getString(R.string.cancel), { dialog, i ->
+                // Implement this.
+            })
+            // Single-choice items (initialized with checked item)
+            .setSingleChoiceItems(singleItems, checkedItem) { dialog, which ->
+                // Respond to item chosen
+            }
+            .show()
     }
 }

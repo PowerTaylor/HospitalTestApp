@@ -4,9 +4,10 @@ import android.os.Bundle
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import com.example.hospitals.fragments.HospitalListFragment
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var hospitalListFragment: HospitalListFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,20 +26,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onFilterItemClicked(): Boolean {
-        val singleItems = arrayOf("Item 1", "Item 2", "Item 3")
-        val checkedItem = 1
-
-        MaterialAlertDialogBuilder(this)
-            .setTitle(resources.getString(R.string.filter_title))
-            .setPositiveButton(resources.getString(R.string.ok)) { dialog, which ->
-                // Respond to positive button press
-            }
-            // Single-choice items (initialized with checked item)
-            .setSingleChoiceItems(singleItems, checkedItem) { dialog, which ->
-                // Respond to item chosen
-            }
-            .show()
-
+        hospitalListFragment.onFilterClicked()
         return true
     }
 
@@ -46,13 +34,17 @@ class MainActivity : AppCompatActivity() {
         val existingFragment = supportFragmentManager.findFragmentByTag(HospitalListFragment.TAG)
 
         if (existingFragment == null) {
+            hospitalListFragment = HospitalListFragment.newInstance()
+
             supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.container,
-                    HospitalListFragment.newInstance(),
+                    hospitalListFragment,
                     HospitalListFragment.TAG
                 )
                 .commit()
+        } else {
+            hospitalListFragment = existingFragment as HospitalListFragment
         }
     }
 }

@@ -1,7 +1,4 @@
 <resources>
     <string name="app_name">HospitalTestApp</string>
     <string name="filter">Filter</string>
-    <string name="cancel">Cancel</string>
-    <string name="filter_title">Filter by:</string>
-    <string name="ok">Ok</string>
 </resources>

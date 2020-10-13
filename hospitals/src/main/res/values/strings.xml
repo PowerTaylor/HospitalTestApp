@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hospital_icon">Hospital icon</string>
+    <string name="cancel">Cancel</string>
+    <string name="filter_title">Filter by:</string>
+    <string name="ok">OK</string>
 </resources>
