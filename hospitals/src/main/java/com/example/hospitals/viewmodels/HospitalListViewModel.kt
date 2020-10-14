@@ -13,25 +13,23 @@ import io.reactivex.rxjava3.kotlin.plusAssign
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-sealed class HospitalViewState {
-
-    data class ListOfHospitalsFetched(
-        val listOfHospitals: List<HospitalViewItemModel>
-    ) : HospitalViewState()
-
-    sealed class Error : HospitalViewState() {
-        object ListFetchFailed : Error()
-    }
-}
+data class ViewState(
+    val listOfHospitals: List<HospitalViewItemModel> = listOf(),
+    val currentFilterOptionIndex: Int = 0,
+    val showFilter: Boolean = false,
+    val showError: Boolean = false
+)
 
 class HospitalListViewModel(
     private val hospitalDataRepository: HospitalDataRepository
 ) : ViewModel() {
 
-    private val _viewState = MutableLiveData<HospitalViewState>()
-    val viewState: LiveData<HospitalViewState> = _viewState
+    private val _viewState = MutableLiveData<ViewState>()
+    val viewState: LiveData<ViewState> = _viewState
 
     private val compositeDisposable = CompositeDisposable()
+
+    private var currentFilterOptionIndex: Int = 0
 
     init {
         getListOfHospitals()
@@ -45,18 +43,35 @@ class HospitalListViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onError = {
-                    _viewState.value = HospitalViewState.Error.ListFetchFailed
+                    _viewState.value = currentViewState().copy(showError = true)
                 },
                 onSuccess = {
-                    _viewState.value = HospitalViewState.ListOfHospitalsFetched(
-                        listOfHospitals = it.mapToViewItemModel()
-                    )
+                    _viewState.value = currentViewState()
+                        .copy(
+                            listOfHospitals = it.mapToViewItemModel(),
+                            showError = false,
+                            showFilter = false
+                        )
                 }
             )
     }
 
-    fun onFilterClicked(index: Int) =
-        getListOfHospitals(HospitalFilterOptions.getFromIndex(index))
+    private fun currentViewState(): ViewState {
+        return viewState.value ?: ViewState()
+    }
+
+    fun onFilterClicked() {
+        _viewState.value = currentViewState()
+            .copy(
+                showFilter = true,
+                currentFilterOptionIndex = currentFilterOptionIndex
+            )
+    }
+
+    fun onFilterConfirmed(index: Int) {
+        currentFilterOptionIndex = index
+        getListOfHospitals(filterOption = HospitalFilterOptions.getFromIndex(currentFilterOptionIndex))
+    }
 
     private fun List<HospitalsDataModel>.mapToViewItemModel(): List<HospitalViewItemModel> =
         map {

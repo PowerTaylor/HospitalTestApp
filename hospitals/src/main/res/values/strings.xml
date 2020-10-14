@@ -4,4 +4,7 @@
     <string name="cancel">Cancel</string>
     <string name="filter_title">Filter by:</string>
     <string name="ok">OK</string>
+    <string name="default_filter">Default</string>
+    <string name="nhs_filter">NHS</string>
+    <string name="website_filter">Has a website</string>
 </resources>

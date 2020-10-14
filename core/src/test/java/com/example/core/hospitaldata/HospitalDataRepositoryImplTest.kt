@@ -5,6 +5,7 @@ import com.example.core.extensions.readJsonAsset
 import com.example.core.hospitaldata.models.HospitalsDataModel
 import com.example.core.hospitaldata.repositories.HospitalDataRepository
 import com.example.core.hospitaldata.repositories.HospitalDataRepositoryImpl
+import com.example.core.hospitaldata.repositories.HospitalFilterOptions
 import com.google.gson.JsonParseException
 import io.mockk.every
 import io.mockk.mockk
@@ -32,11 +33,50 @@ class HospitalDataRepositoryTest {
 
         val expectedList = listOf(
             hospitalDataModel1,
-            hospitalDataModel2
+            hospitalDataModel2,
+            hospitalDataModel3
         )
 
         // When
         val observer = repo.getListOfHospitals().test()
+
+        // Then
+        observer.assertComplete()
+        observer.assertNoErrors()
+        observer.assertValue(expectedList)
+    }
+
+    @Test
+    fun `Given the consumer has requested NHS only hospital data, when the json asset is parsed successfully, then return a list of mapped NHS only models`() {
+        // Given
+        every { context.readJsonAsset(any()) } returns rawDataAsJson
+
+        val expectedList = listOf(
+            hospitalDataModel1,
+            hospitalDataModel2
+        )
+
+        // When
+        val observer = repo.getListOfHospitals(filterOption = HospitalFilterOptions.NHS).test()
+
+        // Then
+        observer.assertComplete()
+        observer.assertNoErrors()
+        observer.assertValue(expectedList)
+    }
+
+    @Test
+    fun `Given the consumer has requested HAS_WEBSITE only hospital data, when the json asset is parsed successfully, then return a list of mapped HAS_WEBSITE only models`() {
+        // Given
+        every { context.readJsonAsset(any()) } returns rawDataAsJson
+
+        val expectedList = listOf(
+            hospitalDataModel1,
+            hospitalDataModel2
+        )
+
+        // When
+        val observer = repo.getListOfHospitals(filterOption = HospitalFilterOptions.NHS).test()
 
         // Then
         observer.assertComplete()
@@ -92,6 +132,17 @@ class HospitalDataRepositoryTest {
         postCode = "BN16 2EB"
     )
 
+    private val hospitalDataModel3 = HospitalsDataModel(
+        id = 17967,
+        name = "Musculoskeletal physiotherapy service - Cranleigh Village Hospital",
+        address1 = "",
+        address2 = "6 High Street",
+        address3 = "",
+        city = "Cranleigh",
+        county = "Surrey",
+        postCode = "GU6 8AE"
+    )
+
     private val rawDataAsJson = "[\n" +
             "  {\n" +
             "    \"OrganisationID\": 1421,\n" +
@@ -139,6 +190,30 @@ class HospitalDataRepositoryTest {
             "    \"Phone\": \"01903 858100\",\n" +
             "    \"Email\": \"\",\n" +
             "    \"Website\": \"http://www.sussexcommunity.nhs.uk/services\",\n" +
+            "    \"Fax\": \"\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"OrganisationID\": 17967,\n" +
+            "    \"OrganisationCode\": \"NDA04\",\n" +
+            "    \"OrganisationType\": \"Hospital\",\n" +
+            "    \"SubType\": \"Hospital\",\n" +
+            "    \"Sector\": \"Independent Sector\",\n" +
+            "    \"OrganisationStatus\": \"Visible\",\n" +
+            "    \"IsPimsManaged\": \"True\",\n" +
+            "    \"OrganisationName\": \"Musculoskeletal physiotherapy service - Cranleigh Village Hospital\",\n" +
+            "    \"Address1\": \"\",\n" +
+            "    \"Address2\": \"6 High Street\",\n" +
+            "    \"Address3\": \"\",\n" +
+            "    \"City\": \"Cranleigh\",\n" +
+            "    \"County\": \"Surrey\",\n" +
+            "    \"Postcode\": \"GU6 8AE\",\n" +
+            "    \"Latitude\": 51.14077377319336,\n" +
+            "    \"Longitude\": -0.4865259528160095,\n" +
+            "    \"ParentODSCode\": \"NDA\",\n" +
+            "    \"ParentName\": \"Virgin Care Services Ltd\",\n" +
+            "    \"Phone\": \"01483 782400\",\n" +
+            "    \"Email\": \"\",\n" +
+            "    \"Website\": \"\",\n" +
             "    \"Fax\": \"\"\n" +
             "  }]"
 }

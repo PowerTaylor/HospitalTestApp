@@ -11,8 +11,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import io.reactivex.rxjava3.core.Single
-import org.hamcrest.CoreMatchers.instanceOf
-import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -30,8 +28,8 @@ class HospitalListViewModelTest {
 
     private val hospitalDataRepository: HospitalDataRepository = mockk(relaxed = true)
 
-    private lateinit var listOfEvents: MutableList<HospitalViewState>
-    private lateinit var testObserver: Observer<HospitalViewState>
+    private lateinit var listOfEvents: MutableList<ViewState>
+    private lateinit var testObserver: Observer<ViewState>
 
     private lateinit var viewModel: HospitalListViewModel
 
@@ -40,7 +38,7 @@ class HospitalListViewModelTest {
         // Given
         every { hospitalDataRepository.getListOfHospitals() } returns Single.just(listOfHospitals)
 
-        val expected = listOf(
+        val expectedList = listOf(
             HospitalViewItemModel(
                 id = 123,
                 name = "Manchester Hospital",
@@ -48,20 +46,16 @@ class HospitalListViewModelTest {
             )
         )
 
+        val expected = ViewState(
+            listOfHospitals = expectedList
+        )
+
         // When
         createViewModel()
 
         // Then
         assertEquals(1, listOfEvents.size)
-        assertThat(
-            listOfEvents[0],
-            instanceOf(HospitalViewState.ListOfHospitalsFetched::class.java)
-        )
-
-        val item1List = (listOfEvents[0] as
-                HospitalViewState.ListOfHospitalsFetched).listOfHospitals
-
-        assertEquals(expected, item1List)
+        assertEquals(expected, listOfEvents[0])
     }
 
     @Test
@@ -69,12 +63,17 @@ class HospitalListViewModelTest {
         // Given
         every { hospitalDataRepository.getListOfHospitals() } returns Single.error(Exception())
 
+        val expected = ViewState(
+            listOfHospitals = emptyList(),
+            showError = true
+        )
+
         // When
         createViewModel()
 
         // Then
         assertEquals(1, listOfEvents.size)
-        assertThat(listOfEvents[0], instanceOf(HospitalViewState.Error.ListFetchFailed::class.java))
+        assertEquals(expected, listOfEvents[0])
     }
 
     @Test
@@ -84,15 +83,44 @@ class HospitalListViewModelTest {
 
         // When
         createViewModel()
-        viewModel.onFilterClicked(index = 1)
+        viewModel.onFilterConfirmed(index = 1)
 
         // Then
-        verify(atMost = 1) { hospitalDataRepository.getListOfHospitals(filterOptions = HospitalFilterOptions.NHS) }
+        verify(atMost = 1) { hospitalDataRepository.getListOfHospitals(filterOption = HospitalFilterOptions.NHS) }
+    }
+
+    @Test
+    fun `Given the user wants to filter the list, when the user selects a filter, then show the currently selected filter`() {
+        // Given
+        every { hospitalDataRepository.getListOfHospitals() } returns Single.just(listOfHospitals)
+
+        val expectedList = listOf(
+            HospitalViewItemModel(
+                id = 123,
+                name = "Manchester Hospital",
+                city = "Manchester"
+            )
+        )
+
+        val expected = ViewState(
+            listOfHospitals = expectedList,
+            showError = false,
+            showFilter = true,
+            currentFilterOptionIndex = 0
+        )
+
+        // When
+        createViewModel()
+        viewModel.onFilterClicked()
+
+        // Then
+        assertEquals(2, listOfEvents.size)
+        assertEquals(expected, listOfEvents[1])
     }
 
     private fun createViewModel() {
         listOfEvents = mutableListOf()
-        testObserver = Observer<HospitalViewState> { listOfEvents.add(it) }
+        testObserver = Observer<ViewState> { listOfEvents.add(it) }
 
         viewModel = HospitalListViewModel(hospitalDataRepository)
             .also { it.viewState.observeForever(testObserver) }

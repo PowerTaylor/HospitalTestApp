@@ -5,6 +5,7 @@ import com.example.core.extensions.readJsonAsset
 import com.example.core.hospitaldata.models.HospitalsDataModel
 import com.example.core.hospitaldata.models.HospitalsRawDataModel
 import com.google.gson.Gson
+import com.google.gson.JsonParseException
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import io.reactivex.rxjava3.core.Single
@@ -14,16 +15,22 @@ class HospitalDataRepositoryImpl(
     private val appContext: Context
 ) : HospitalDataRepository {
 
+    private val hospitalDataJson = "Hospitals.json"
+    private val nhsSector = "NHS Sector"
+
     private val gson = Gson()
 
     override fun getListOfHospitals(
-        filterOptions: HospitalFilterOptions
+        filterOption: HospitalFilterOptions
     ): Single<List<HospitalsDataModel>> {
         return Single.create { emitter ->
             try {
-                val json = appContext.readJsonAsset("Hospitals.json")
-                val modelType = object : TypeToken<List<HospitalsRawDataModel>>() {}.type
-                val listOfRawDataModels = gson.fromJson<List<HospitalsRawDataModel>>(json, modelType)
+                var listOfRawDataModels = getData()
+
+                if (filterOption != HospitalFilterOptions.DEFAULT) {
+                    listOfRawDataModels = listOfRawDataModels
+                        .filter { filterCondition(filterOption, it) }
+                }
 
                 emitter.onSuccess(listOfRawDataModels.mapToHospitalDataModel())
             } catch (e: JsonSyntaxException) {
@@ -32,6 +39,21 @@ class HospitalDataRepositoryImpl(
                 emitter.onError(IOException("Unable to parse API response!"))
             }
         }
+    }
+
+    private fun filterCondition(filterOption: HospitalFilterOptions, model: HospitalsRawDataModel): Boolean {
+        return when (filterOption) {
+            HospitalFilterOptions.DEFAULT -> true
+            HospitalFilterOptions.NHS -> !model.sector.isBlank() && model.sector == nhsSector
+            HospitalFilterOptions.HAS_WEBSITE -> model.website.isNotBlank()
+        }
+    }
+
+    @Throws(IOException::class, JsonParseException::class)
+    private fun getData(): List<HospitalsRawDataModel> {
+        val json = appContext.readJsonAsset(hospitalDataJson)
+        val modelType = object : TypeToken<List<HospitalsRawDataModel>>() {}.type
+        return gson.fromJson(json, modelType)
     }
 
     private fun List<HospitalsRawDataModel>.mapToHospitalDataModel(): List<HospitalsDataModel> =

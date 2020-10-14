@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.core.hospitaldata.repositories.HospitalFilterOptions
 import com.example.hospitals.R
 import com.example.hospitals.adapters.HospitalListAdapter
 import com.example.hospitals.models.HospitalViewItemModel
 import com.example.hospitals.viewmodels.HospitalListViewModel
-import com.example.hospitals.viewmodels.HospitalViewState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.viewmodel.ext.android.getViewModel
 
@@ -44,10 +44,8 @@ class HospitalListFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.viewState.observe(viewLifecycleOwner, {
-            when (it) {
-                is HospitalViewState.ListOfHospitalsFetched ->
-                    showHospitals(it.listOfHospitals)
-            }
+            showHospitals(it.listOfHospitals)
+            if (it.showFilter) showFilter(it.currentFilterOptionIndex)
         })
     }
 
@@ -63,22 +61,33 @@ class HospitalListFragment : Fragment() {
         adapter.items = items
     }
 
-    fun onFilterClicked() {
-        val singleItems = arrayOf("Item 1", "Item 2", "Item 3")
-        val checkedItem = 1
+    fun onFilterClicked() =
+        viewModel.onFilterClicked()
 
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(resources.getString(R.string.filter_title))
-            .setPositiveButton(resources.getString(R.string.ok)) { dialog, which ->
-                // Respond to positive button press
-                viewModel.onFilterClicked(index = checkedItem)
+    private fun showFilter(currentFilterOptionIndex: Int) {
+        val items = mutableListOf<String>()
+
+        for (filterOption in HospitalFilterOptions.values()) {
+            when(filterOption) {
+                HospitalFilterOptions.DEFAULT ->
+                    items.add(resources.getString(R.string.default_filter))
+                HospitalFilterOptions.NHS ->
+                    items.add(resources.getString(R.string.nhs_filter))
+                HospitalFilterOptions.HAS_WEBSITE ->
+                    items.add(resources.getString(R.string.website_filter))
             }
-            .setNeutralButton(resources.getString(R.string.cancel), { dialog, i ->
-                // Implement this.
-            })
-            // Single-choice items (initialized with checked item)
-            .setSingleChoiceItems(singleItems, checkedItem) { dialog, which ->
-                // Respond to item chosen
+        }
+
+        var checkedItem = currentFilterOptionIndex
+
+        MaterialAlertDialogBuilder(requireActivity())
+            .setTitle(resources.getString(R.string.filter_title))
+            .setPositiveButton(resources.getString(R.string.ok)) { _, _ ->
+                viewModel.onFilterConfirmed(index = checkedItem)
+            }
+            .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
+            .setSingleChoiceItems(items.toTypedArray(), checkedItem) { dialog, which ->
+                checkedItem = which
             }
             .show()
     }

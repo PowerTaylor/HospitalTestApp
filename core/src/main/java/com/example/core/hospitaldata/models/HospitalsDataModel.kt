@@ -10,4 +10,3 @@ data class HospitalsDataModel(
     val county: String,
     val postCode: String
 )
-

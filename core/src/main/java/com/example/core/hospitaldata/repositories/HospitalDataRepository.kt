@@ -6,13 +6,14 @@ import io.reactivex.rxjava3.core.Single
 interface HospitalDataRepository {
 
     fun getListOfHospitals(
-        filterOptions: HospitalFilterOptions = HospitalFilterOptions.DEFAULT
+        filterOption: HospitalFilterOptions = HospitalFilterOptions.DEFAULT
     ): Single<List<HospitalsDataModel>>
 }
 
 enum class HospitalFilterOptions {
     DEFAULT,
-    NHS;
+    NHS,
+    HAS_WEBSITE;
 
     companion object {
         fun getFromIndex(index: Int): HospitalFilterOptions {
