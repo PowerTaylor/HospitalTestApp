@@ -8,5 +8,8 @@ data class HospitalsDataModel(
     val address3: String,
     val city: String,
     val county: String,
-    val postCode: String
+    val postCode: String,
+    val website: String,
+    val phone: String,
+    val sector: String
 )

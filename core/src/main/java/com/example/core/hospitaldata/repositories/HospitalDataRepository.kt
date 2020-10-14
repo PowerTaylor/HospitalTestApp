@@ -8,6 +8,10 @@ interface HospitalDataRepository {
     fun getListOfHospitals(
         filterOption: HospitalFilterOptions = HospitalFilterOptions.DEFAULT
     ): Single<List<HospitalsDataModel>>
+
+    fun getHospital(
+        hospitalId: Long
+    ): Single<HospitalsDataModel>
 }
 
 enum class HospitalFilterOptions {

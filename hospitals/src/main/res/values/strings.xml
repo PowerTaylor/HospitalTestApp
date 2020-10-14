@@ -8,4 +8,8 @@
     <string name="nhs_filter">NHS</string>
     <string name="website_filter">Has a website</string>
     <string name="call">Call</string>
+    <string name="name_prefix">Name: \n</string>
+    <string name="address_prefix">Address: \n</string>
+    <string name="sector_prefix">Sector: \n</string>
+    <string name="website_prefix">Website: \n</string>
 </resources>

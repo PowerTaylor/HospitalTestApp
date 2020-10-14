@@ -14,10 +14,10 @@
             android:id="@+id/image_view"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:background="@drawable/gradient"
             android:contentDescription="@string/hospital_icon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:background="@drawable/gradient"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/hospital" />
 
@@ -87,6 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="@string/call"
+            android:visibility="gone"
             app:icon="@drawable/ic_call"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

@@ -135,7 +135,10 @@ class HospitalListViewModelTest {
             address3 = "",
             city = "Manchester",
             county = "East Yorkshire",
-            postCode = "HU17 0FA"
+            postCode = "HU17 0FA",
+            phone = "1234567890",
+            website = "www.website.co.uk",
+            sector = "NHS Sector"
         )
     )
 }

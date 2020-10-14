@@ -13,6 +13,7 @@ import io.mockk.mockkStatic
 import org.junit.Before
 import org.junit.Test
 import java.io.IOException
+import java.lang.RuntimeException
 
 class HospitalDataRepositoryTest {
 
@@ -44,6 +45,35 @@ class HospitalDataRepositoryTest {
         observer.assertComplete()
         observer.assertNoErrors()
         observer.assertValue(expectedList)
+    }
+
+    @Test
+    fun `Given the consumer has requested specific hospital data, when the json asset is parsed successfully and the hospital is found, then return a mapped hospital model`() {
+        // Given
+        every { context.readJsonAsset(any()) } returns rawDataAsJson
+
+        val expectedModel = hospitalDataModel1
+
+        // When
+        val observer = repo.getHospital(1421).test()
+
+        // Then
+        observer.assertComplete()
+        observer.assertNoErrors()
+        observer.assertValue(expectedModel)
+    }
+
+    @Test
+    fun `Given the consumer has requested specific hospital data, when the hospital cannot be found, then return an error`() {
+        // Given
+        val exception = JsonParseException("Unable to find hospital!")
+        every { context.readJsonAsset(any()) } throws exception
+
+        // When
+        val observer = repo.getHospital(111).test()
+
+        // Then
+        observer.assertError(RuntimeException::class.java)
     }
 
     @Test
@@ -118,7 +148,10 @@ class HospitalDataRepositoryTest {
         address3 = "",
         city = "Beverley",
         county = "East Yorkshire",
-        postCode = "HU17 0FA"
+        postCode = "HU17 0FA",
+        phone = "01482 886600",
+        website = "http://www.humber.nhs.uk",
+        sector = "NHS Sector"
     )
 
     private val hospitalDataModel2 = HospitalsDataModel(
@@ -129,7 +162,10 @@ class HospitalDataRepositoryTest {
         address3 = "Rustington",
         city = "Littlehampton",
         county = "Sussex",
-        postCode = "BN16 2EB"
+        postCode = "BN16 2EB",
+        phone = "01903 858100",
+        website = "http://www.sussexcommunity.nhs.uk/services",
+        sector = "NHS Sector"
     )
 
     private val hospitalDataModel3 = HospitalsDataModel(
@@ -140,7 +176,10 @@ class HospitalDataRepositoryTest {
         address3 = "",
         city = "Cranleigh",
         county = "Surrey",
-        postCode = "GU6 8AE"
+        postCode = "GU6 8AE",
+        phone = "01483 782400",
+        website = "",
+        sector = "Independent Sector"
     )
 
     private val rawDataAsJson = "[\n" +

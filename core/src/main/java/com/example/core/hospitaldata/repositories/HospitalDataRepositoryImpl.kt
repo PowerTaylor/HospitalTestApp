@@ -41,7 +41,31 @@ class HospitalDataRepositoryImpl(
         }
     }
 
-    private fun filterCondition(filterOption: HospitalFilterOptions, model: HospitalsRawDataModel): Boolean {
+    override fun getHospital(hospitalId: Long): Single<HospitalsDataModel> {
+        return Single.create { emitter ->
+            try {
+                val listOfRawDataModels = getData().mapToHospitalDataModel()
+
+                val hospital = listOfRawDataModels
+                    .firstOrNull { it.id == hospitalId }
+
+                if (hospital == null) {
+                    emitter.onError(RuntimeException("Unable to find hospital!"))
+                } else {
+                    emitter.onSuccess(hospital)
+                }
+            } catch (e: JsonSyntaxException) {
+                emitter.onError(RuntimeException("Unable to parse API response!"))
+            } catch (e: IOException) {
+                emitter.onError(IOException("Unable to parse API response!"))
+            }
+        }
+    }
+
+    private fun filterCondition(
+        filterOption: HospitalFilterOptions,
+        model: HospitalsRawDataModel
+    ): Boolean {
         return when (filterOption) {
             HospitalFilterOptions.DEFAULT -> true
             HospitalFilterOptions.NHS -> !model.sector.isBlank() && model.sector == nhsSector
@@ -66,7 +90,10 @@ class HospitalDataRepositoryImpl(
                 address3 = it.address3,
                 city = it.city,
                 county = it.county,
-                postCode = it.postcode
+                postCode = it.postcode,
+                phone = it.phone,
+                website = it.website,
+                sector = it.sector
             )
         }
 }

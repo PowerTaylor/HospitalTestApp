@@ -7,5 +7,5 @@ import org.koin.dsl.module
 
 val hospitalModule = module {
     viewModel { HospitalListViewModel(get()) }
-    viewModel { HospitalViewModel() }
+    viewModel { HospitalViewModel(get()) }
 }
