@@ -42,6 +42,7 @@ class HospitalDataRepositoryImpl(
     }
 
     override fun getHospital(hospitalId: Long): Single<HospitalsDataModel> {
+        // This could be fetched from memory/cache if performance was an issue.
         return Single.create { emitter ->
             try {
                 val listOfRawDataModels = getData().mapToHospitalDataModel()

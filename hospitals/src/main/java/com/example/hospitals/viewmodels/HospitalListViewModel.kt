@@ -38,6 +38,7 @@ class HospitalListViewModel(
     private fun getListOfHospitals(
         filterOption: HospitalFilterOptions = HospitalFilterOptions.DEFAULT
     ) {
+        // Progress bar could be added if performance was slow via: .doOnSubscribe {  }
         compositeDisposable += hospitalDataRepository.getListOfHospitals(filterOption)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
