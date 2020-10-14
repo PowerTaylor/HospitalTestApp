@@ -10,7 +10,13 @@ import com.example.hospitals.models.HospitalViewItemModel
 import com.example.hospitals.viewholders.HospitalDetailViewHolder
 import com.example.hospitals.viewholders.bindWithItemModel
 
-class HospitalListAdapter : RecyclerView.Adapter<ViewHolder>() {
+class HospitalListAdapter(
+    private val listener: OnClickListener
+) : RecyclerView.Adapter<ViewHolder>() {
+
+    interface OnClickListener {
+        fun onClick(hospitalId: Long)
+    }
 
     var items = listOf<HospitalViewItemModel>()
         set(value) {
@@ -21,7 +27,7 @@ class HospitalListAdapter : RecyclerView.Adapter<ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(parent.context)
             .inflate(R.layout.hospital_detail_item, parent, false)
-        return HospitalDetailViewHolder(view)
+        return HospitalDetailViewHolder(view, listener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

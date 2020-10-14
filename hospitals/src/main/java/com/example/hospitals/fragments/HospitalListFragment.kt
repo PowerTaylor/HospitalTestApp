@@ -9,13 +9,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.core.hospitaldata.repositories.HospitalFilterOptions
 import com.example.hospitals.R
+import com.example.hospitals.activities.HospitalActivity
 import com.example.hospitals.adapters.HospitalListAdapter
 import com.example.hospitals.models.HospitalViewItemModel
 import com.example.hospitals.viewmodels.HospitalListViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.viewmodel.ext.android.getViewModel
 
-class HospitalListFragment : Fragment() {
+class HospitalListFragment : Fragment(), HospitalListAdapter.OnClickListener {
 
     companion object {
         const val TAG = "HospitalListFragment"
@@ -26,7 +27,7 @@ class HospitalListFragment : Fragment() {
     private lateinit var viewModel: HospitalListViewModel
 
     private val recyclerView: RecyclerView? by lazy { view?.findViewById(R.id.recycler_view) }
-    private val adapter = HospitalListAdapter()
+    private val adapter = HospitalListAdapter(this)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -90,5 +91,9 @@ class HospitalListFragment : Fragment() {
                 checkedItem = which
             }
             .show()
+    }
+
+    override fun onClick(hospitalId: Long) {
+        HospitalActivity.startActivity(requireContext(), hospitalId)
     }
 }

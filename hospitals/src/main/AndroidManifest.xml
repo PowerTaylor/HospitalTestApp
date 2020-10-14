@@ -2,4 +2,7 @@
     package="com.example.hospitals">
 
     /
+    <application>
+        <activity android:name=".activities.HospitalActivity" />
+    </application>
 </manifest>
