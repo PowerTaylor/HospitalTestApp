@@ -55,8 +55,8 @@ class HospitalViewModelTest {
         viewModel.initialise(123)
 
         // Then
-        assertEquals(1, listOfEvents.size)
-        assertEquals(expected, listOfEvents[0])
+        assertEquals(2, listOfEvents.size)
+        assertEquals(expected, listOfEvents[1])
     }
 
     @Test
@@ -74,8 +74,8 @@ class HospitalViewModelTest {
         viewModel.initialise(123)
 
         // Then
-        assertEquals(1, listOfEvents.size)
-        assertEquals(expected, listOfEvents[0])
+        assertEquals(2, listOfEvents.size)
+        assertEquals(expected, listOfEvents[1])
     }
 
     private fun createViewModel() {

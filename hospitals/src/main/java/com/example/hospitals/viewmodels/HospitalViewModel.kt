@@ -1,10 +1,8 @@
 package com.example.hospitals.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.core.hospitaldata.models.HospitalsDataModel
 import com.example.core.hospitaldata.repositories.HospitalDataRepository
+import com.example.core.viewmodels.BaseViewModel
 import com.example.hospitals.models.HospitalItemModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -19,12 +17,13 @@ data class HospitalViewState(
 
 class HospitalViewModel(
     private val hospitalDataRepository: HospitalDataRepository
-) : ViewModel() {
-
-    private val _viewState = MutableLiveData<HospitalViewState>()
-    val viewState: LiveData<HospitalViewState> = _viewState
+) : BaseViewModel<HospitalViewState>() {
 
     private val compositeDisposable = CompositeDisposable()
+
+    init {
+        setInitialState(HospitalViewState())
+    }
 
     fun initialise(hospitalId: Long) {
         getHospital(hospitalId = hospitalId)
@@ -36,20 +35,19 @@ class HospitalViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onError = {
-                    _viewState.value = currentViewState().copy(showError = true)
+                    emitViewState { currentViewState ->
+                        currentViewState.copy(showError = true)
+                    }
                 },
                 onSuccess = {
-                    _viewState.value = currentViewState()
-                        .copy(
+                    emitViewState { currentViewState ->
+                        currentViewState.copy(
                             hospitalItemModel = it.mapToHospitalItemModel(),
                             showError = false
                         )
+                    }
                 }
             )
-    }
-
-    private fun currentViewState(): HospitalViewState {
-        return viewState.value ?: HospitalViewState()
     }
 
     private fun HospitalsDataModel.mapToHospitalItemModel(): HospitalItemModel {
